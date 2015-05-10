@@ -1,0 +1,36 @@
+TODO
+====
+
+(from highest-prio-or-simplest to lowest-prio-or-longterm):
+
+ * In iamc/iambot use argparse (e.g. --help,--version,--verbose,--no-sys-config,
+   --no-home-config)
+
+ * Move more functions into iam_common.py (anything reusable in iam/iambot)
+
+ * Add server returning statuses for a user (at present just returns all statuses for all users)
+
+ * Add recursive merging of *SysConfig and *Config in iamd
+
+ * Use patch to tweak "http" in iamd.l, rather than the present total rewrite
+
+ * Add user-authentication in iamd (then clients/bot of course)
+
+ * Cache logfiles-content in iamd based on (info [filename]), to reduce disk IO
+
+ * Other protocols, SSL, etc
+
+ * Finish form/database version of iamd (interactive webapp, jquery live-update, etc)
+
+ * Optional json output from iamd
+
+ * Rewrite clients/bot/libs in picolisp
+
+ * Add POST to iamd for updating data, eventually (perhaps) full REST API
+
+FIXME
+=====
+
+ * Fix launching terminal-browser in xterm in iamc.py
+
+ * Fix generating sexpressions from python

@@ -1,0 +1,56 @@
+; © Copyright 2014, 2015 Rowan Thorpe
+;
+; This file is part of iam
+;
+; iam is free software: you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation, either version 3 of the License, or
+; (at your option) any later version.
+;
+; iam is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with iam.  If not, see <http://www.gnu.org/licenses/>.
+
+'( ("common"
+    ("server" "SERVER_URL")
+
+    ("port" 4004)
+
+    ("proto" "http://")
+
+    ; unset "user" means user=os.getlogin()
+
+    ("user" "USER_NAME")
+
+    ; password not used yet anyway...
+    ("password" "USER_PASSWORD") )
+
+  ("daemon"
+    ("logdir" "/var/log/iamd")
+
+    ("users" "USER" "USER" "USER" "USER") )
+
+  ("client"
+    ; browser = 'html2text', 'raw' or 'less' will be spawned in foreground (or in xterm if
+    ;  use_xterm = T), all others in background.
+    ; browser = 'raw' means just dump to stdout (usually 'less' is better than 'raw' with
+    ;  use_xterm = T).
+    ("browser" "lynx")
+
+    ; use_xterm doesn't actually work yet anyway...
+    ("use_xterm" NIL)
+
+    ("xterm" "x-terminal-emulator") )
+
+  ("bot"
+    ("room" "CHAT_ROOM")
+
+    ("user" "CHAT_USER")
+
+    ("password" "CHAT_USER_PASSWORD")
+
+    ("nick" "iambot") ) )

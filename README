@@ -1,0 +1,29 @@
+README
+======
+
+iamd is a server which receives and displays updates about what you are
+presently doing, hence the name:
+ (i.e. "I am working on icinga alerts" => iam "working on icinga alerts")
+
+----
+
+iamd.l is a statuses server, designed for simplicity/speed/reliability,
+and for info to be easily viewed from any browser.
+
+iamc.py is an interactive client for posting statuses to - and getting info
+directly from - iamd.
+
+iam.sh is a minimal tool for posting statuses non-interactively.
+
+iambot.py is a jabberbot to relay status commands from a chatserver to the
+statuses server (work in progress, almost works...).
+
+----
+
+See INSTALL for installation instructions.
+
+----
+
+Report bugs: https://github.com/rowanthorpe/iam
+
+Contact the developer: Rowan Thorpe <rowan@rowanthorpe.com>

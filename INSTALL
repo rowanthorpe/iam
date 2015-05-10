@@ -1,0 +1,81 @@
+INSTALL
+=======
+
+I haven't had time to "bundle" or "package" stuff. For now just copy files into the right places
+manually - it's simple enough at present. The files are:
+
+CONFIG:
+
+ iam_config.l.dist:
+
+  Template for the config-file used by the server, client and chatbot.
+
+  Eventually the server will source both /etc/iam_config.l and one of [config-from-runtime-arg]
+  or [pwd]/iam_config.l, but for now it just uses /etc/iam_config.l
+
+  The interactive client & chatbot attempt to source /etc/iam_config.l, then ~/iam_config.l,
+  then one of [config-from-runtime-arg] or [pwd]/iam_config.l
+
+  Copy the template to one of those locations, then edit and chown/chmod to protect passwords
+  (but with enough perms to be readable by the client/bot/server).
+
+SERVER:
+
+ iamd.l:
+
+  The server. Better run from an init-script (I'll get around to writing one soon), otherwise:
+   (setsid ./iamd.l </dev/null >/dev/null 2>&1 &)
+
+  Requires: picolisp
+
+CLIENTS:
+
+ iamc.py:
+
+  The main interactive client.
+
+  Requires: python
+  Imports: sys, socket, re, subprocess, termios
+
+ iam.sh:
+
+  Minimal commandline posix-shell-client to just post statuses. Self-contained, doesn't require
+  anything, doesn't source configs (so you must edit the script for custom settings). Can be
+  useful to also include a symlink "iam" in the PATH, pointing to this (typing ".sh" gets
+  annoying after a while)
+
+  Requires: posix-shell
+
+BOT:
+
+ iambot.py:
+
+  Chatbot (Jabber only for now) for relaying status-instructions from a chatroom to the
+  status-server, or for requesting status-server output to the chatroom. Can be run from anywhere
+  you are able to login to the chat server.
+
+  Requires: python
+  Imports: sys, socket, xmpp, jabberbot
+
+LIBS:
+
+ iam_common.py:
+
+  Common python function libs. Must be in same directory as iamc.py/iambot.py or in the python-path.
+
+  Requires: python
+  Imports: sys, os
+
+ iam_sexp.py
+
+  Hyper-minimal python s-expression lib (just enough for reading the config-format). Must be in same
+  directory as iamc.py/iambot.py or in the python-path.
+
+  Requires: python
+  Imports: re, itertools
+
+MISC:
+
+ cron.d_iamd-rotate:
+
+  Example system-crontab for rotating status-logs at midnight every Sunday
