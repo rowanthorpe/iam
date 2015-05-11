@@ -19,6 +19,8 @@ TODO
 
  * Use patch to tweak "http" in iamd, rather than the present total rewrite [target: 0.2]
 
+ * Add to iamd returning older entries from rotated (zipped) files on request [target: 0.3]
+
  * Add most obvious/simple API stuff (put, get, delete) to iamd [target: 0.3]
 
  * Finish per-user views in iamd [target: 0.3]
