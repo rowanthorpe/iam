@@ -4,29 +4,39 @@ TODO
 (from highest-prio-or-simplest to lowest-prio-or-longterm):
 
  * In iamc/iambot use argparse (e.g. --help,--version,--verbose,--no-sys-config,
-   --no-home-config)
+   --no-home-config) [target: 0.2]
 
- * Move more functions into iam_common.py (anything reusable in iam/iambot)
+ * Move more functions into iam_common.py (anything reusable in iam/iambot) [target: 0.2]
 
- * Add server returning statuses for a user (at present just returns all statuses for all users)
+ * Add returning statuses for a user to iamd (at present just returns all statuses for all users)
+   [target: 0.2]
 
- * Add recursive merging of *SysConfig and *Config in iamd
+ * Add recursive merging of *SysConfig and *Config to iamd [target: 0.2]
 
- * Use patch to tweak "http" in iamd.l, rather than the present total rewrite
+ * Cache logfiles-content in iamd based on (info [filename]), to reduce disk IO [target: 0.2]
 
- * Add user-authentication in iamd (then clients/bot of course)
+ * Add basic CSS styling for web view to iamd [target: 0.2]
 
- * Cache logfiles-content in iamd based on (info [filename]), to reduce disk IO
+ * Use patch to tweak "http" in iamd, rather than the present total rewrite [target: 0.2]
 
- * Other protocols, SSL, etc
+ * Add most obvious/simple API stuff (put, get, delete) to iamd [target: 0.3]
 
- * Finish form/database version of iamd (interactive webapp, jquery live-update, etc)
+ * Finish per-user views in iamd [target: 0.3]
 
- * Optional json output from iamd
+ * Add user-authentication in iamd (then clients/bot of course) [target: 0.3]
 
- * Rewrite clients/bot/libs in picolisp
+ * Finish interactive app form-based version of iamd (javascript, etc), better CSS, search box,
+   etc [target: 0.4]
 
- * Add POST to iamd for updating data, eventually (perhaps) full REST API
+ * Handle other protocols, SSL, etc in iamd and clients/bot [target: 0.4]
+
+ * Finish integrated-DB-based version of iamd, which "exports" log files on request [target: 0.5]
+
+ * Optional json output from iamd [target: 0.5]
+
+ * Rewrite clients/bot/libs in picolisp [target: 0.5]
+
+ * (Perhaps) full REST API in iamd [target: 0.6]
 
 FIXME
 =====
