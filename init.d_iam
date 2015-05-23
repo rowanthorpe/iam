@@ -14,9 +14,9 @@
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH='/sbin:/usr/sbin:/bin:/usr/bin'
 DESC='iam statuses daemon'
-NAME='iamd'
+NAME='iam'
 DAEMON='/usr/bin/iamd.l'
-PIDFILE="/var/run/$NAME/$NAME.pid"
+PIDFILE="/var/run/${NAME}/${NAME}.pid"
 SCRIPTNAME="/etc/init.d/$NAME"
 # override the below settings in /etc/default/iam
 DAEMON_ARGS=''
@@ -42,18 +42,18 @@ do_start() {
     #   0 if daemon has been started
     #   1 if daemon was already running
     #   2 if daemon could not be started
-    start-stop-daemon --start --quiet --pidfile "$PIDFILE" --exec "$DAEMON" --test > /dev/null || return 1
-    start-stop-daemon --start --quiet --pidfile "$PIDFILE" --exec "$DAEMON" -- $DAEMON_ARGS || return 2
+    start-stop-daemon --quiet --start --pidfile "$PIDFILE" --exec "$DAEMON" --test || return 1
+    start-stop-daemon --quiet --start --background --make-pidfile --pidfile "$PIDFILE" --exec "$DAEMON" -- $DAEMON_ARGS || return 2
 }
 
 #
 # Function that stops the daemon/service
 #
 do_stop() {
-    start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile "$PIDFILE" --exec "$DAEMON"
+    start-stop-daemon --quiet --stop --retry=TERM/30/KILL/5 --remove-pidfile --pidfile "$PIDFILE"
     RETVAL=$?
     ! test 2 -eq $RETVAL || return 2
-    start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec "$DAEMON"
+    start-stop-daemon --quiet --stop --oknodo --retry=0/30/KILL/5 --remove-pidfile --pidfile "$PIDFILE"
     ! test 2 -eq $? || return 2
     rm -f "$PIDFILE"
     return "$RETVAL"
@@ -95,7 +95,7 @@ case "$1" in
         #    log_action_msg "Not starting $NAME (\$DAEMON_ARGS must be set in /etc/default/$NAME)."
         #    exit 0
         #fi
-        log_daemon_msg "Starting $DESC " "$NAME"
+        log_daemon_msg "Starting $DESC" "$NAME"
         do_start
         case $? in
             0|1) log_end_msg 0 ;;
