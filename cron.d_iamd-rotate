@@ -1,7 +1,7 @@
 # /etc/cron.d/iamd: crontab entries for iamd
 
 SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 # min hr dom mon dow
-0 0    * * 0   root	iamd.l rotate-logs
+0 0    * * 0   root	service iam rotate-logs

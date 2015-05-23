@@ -1,0 +1,2 @@
+# set to 'yes' for init-script to work
+RUN_DAEMON='no'

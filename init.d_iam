@@ -1,0 +1,140 @@
+#! /bin/sh -e
+### BEGIN INIT INFO
+# Provides:          iam
+# Required-Start:    $local_fs $remote_fs $network
+# Required-Stop:     $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: iam daemon
+# Description:       iam statuses daemon
+### END INIT INFO
+
+# Author: Rowan Thorpe <rowan@rowanthorpe.com>
+
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+PATH='/sbin:/usr/sbin:/bin:/usr/bin'
+DESC='iam statuses daemon'
+NAME='iamd'
+DAEMON='/usr/bin/iamd.l'
+PIDFILE="/var/run/$NAME/$NAME.pid"
+SCRIPTNAME="/etc/init.d/$NAME"
+# override the below settings in /etc/default/iam
+DAEMON_ARGS=''
+RUN_DAEMON='no'
+
+# Exit if the package is not installed
+test -x "$DAEMON" || exit 0
+
+# Read configuration variable file if it is present
+if test -r "/etc/default/$NAME"; then
+    . "/etc/default/$NAME" || { printf 'Failed to source /etc/default/%s\n' "$NAME"; exit 1; }
+fi
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+. /lib/lsb/init-functions || { printf 'Failed to source /lib/lsb/init-functions\n'; exit 1; }
+
+#
+# Function that starts the daemon/service
+#
+do_start() {
+    # Return
+    #   0 if daemon has been started
+    #   1 if daemon was already running
+    #   2 if daemon could not be started
+    start-stop-daemon --start --quiet --pidfile "$PIDFILE" --exec "$DAEMON" --test > /dev/null || return 1
+    start-stop-daemon --start --quiet --pidfile "$PIDFILE" --exec "$DAEMON" -- $DAEMON_ARGS || return 2
+}
+
+#
+# Function that stops the daemon/service
+#
+do_stop() {
+    start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile "$PIDFILE" --exec "$DAEMON"
+    RETVAL=$?
+    ! test 2 -eq $RETVAL || return 2
+    start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec "$DAEMON"
+    ! test 2 -eq $? || return 2
+    rm -f "$PIDFILE"
+    return "$RETVAL"
+}
+
+#
+# Function that stops then starts the daemon/service
+#
+do_restart() {
+    do_stop
+    case "$?" in
+        0|1)
+            do_start || false # both $? = 1 (old proc still running) and $? > 1 (failed to start) -> 1
+            ;;
+        *)
+            false # (failed to stop)
+            ;;
+    esac
+}
+
+do_rotatelogs() {
+    "$DAEMON" rotate-logs
+}
+
+#
+# Function that sends a SIGHUP to the daemon/service
+#
+#do_reload() {
+#    start-stop-daemon --stop --signal 1 --quiet --pidfile "$PIDFILE" --exec "$DAEMON"
+#}
+
+case "$1" in
+    start)
+        if ! test 'yes' = "$RUN_DAEMON"; then
+            log_action_msg "Not starting $NAME (Disabled in /etc/default/$NAME)."
+            exit 0
+        fi
+        #if test -z "$DAEMON_ARGS"; then
+        #    log_action_msg "Not starting $NAME (\$DAEMON_ARGS must be set in /etc/default/$NAME)."
+        #    exit 0
+        #fi
+        log_daemon_msg "Starting $DESC " "$NAME"
+        do_start
+        case $? in
+            0|1) log_end_msg 0 ;;
+            2) log_end_msg 1 ;;
+        esac
+        ;;
+    stop)
+        log_daemon_msg "Stopping $DESC" "$NAME"
+        do_stop
+        case $? in
+            0|1) log_end_msg 0 ;;
+            2) log_end_msg 1 ;;
+        esac
+        ;;
+    status)
+        status_of_proc -p "$PIDFILE" "$DAEMON" "$NAME"
+        exit $?
+        ;;
+    #reload|force-reload)
+    #    log_daemon_msg "Reloading $DESC" "$NAME"
+    #    do_reload
+    #    log_end_msg $?
+    #    ;;
+    #restart)
+    restart|force-reload)
+        log_daemon_msg "Restarting $DESC" "$NAME"
+        do_restart
+        log_end_msg $?
+        ;;
+    rotate-logs)
+        log_daemon_msg "Rotating logs for $DESC" "$NAME"
+        do_rotatelogs
+        log_end_msg $?
+        ;;
+    *)
+        #printf 'Usage: %s {start|stop|status|restart|reload|rotate-logs}\n' "$scriptname" >&2
+        printf 'Usage: %s {start|stop|status|restart|force-reload|rotate-logs}\n' "$scriptname" >&2
+        exit 3
+        ;;
+esac
+
+:
