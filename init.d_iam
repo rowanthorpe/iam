@@ -21,6 +21,8 @@ SCRIPTNAME="/etc/init.d/$NAME"
 # override the below settings in /etc/default/iam
 DAEMON_ARGS=''
 RUN_DAEMON='no'
+USER='iam'
+GROUP='iam'
 
 # Exit if the package is not installed
 test -x "$DAEMON" || exit 0
@@ -42,8 +44,14 @@ do_start() {
     #   0 if daemon has been started
     #   1 if daemon was already running
     #   2 if daemon could not be started
-    start-stop-daemon --quiet --start --pidfile "$PIDFILE" --exec "$DAEMON" --test || return 1
-    start-stop-daemon --quiet --start --background --make-pidfile --pidfile "$PIDFILE" --exec "$DAEMON" -- $DAEMON_ARGS || return 2
+    [ -e /var/run/$NAME ] || \
+        install -d -o$USER -g$GROUP -m755 /var/run/$NAME
+    [ -e /var/run/${NAME}/statuses ] || \
+        install -d -o$USER -g$GROUP -m755 /var/run/${NAME}/statuses
+    start-stop-daemon --quiet --start --pidfile "$PIDFILE" --exec "$DAEMON" --test \
+        --chuid "${USER}:${GROUP}" >/dev/null || return 1
+    start-stop-daemon --quiet --start --background --make-pidfile --pidfile "$PIDFILE" --exec "$DAEMON" \
+        --chuid "${USER}:${GROUP}" -- $DAEMON_ARGS || return 2
 }
 
 #
@@ -75,7 +83,7 @@ do_restart() {
 }
 
 do_rotatelogs() {
-    "$DAEMON" rotate-logs
+    sudo -u "$USER" -g "$GROUP" "$DAEMON" rotate-logs
 }
 
 #

@@ -76,16 +76,18 @@
                                    (pack *LogDir "/" X)
                                    lockfile
                                    (pack logfile ".lock") )
-                               (acquire lockfile)
-                               (let (modstamp
-                                     (tail 1 (info logfile))
-                                     destfile
-                                     (pack logfile "."
-                                           (dat$ (car modstamp))
-                                           (filter '((X) (not (= X ":")))
-                                                   (chop (tim$ (cdr modstamp) T)) ) ) )
-                                 (call "mv" logfile destfile)
-                                 (call "gzip" "-6" destfile) )
+                               (and
+                                (acquire lockfile)
+                                (let (modstamp
+                                      (tail 1 (info logfile))
+                                      destfile
+                                      (pack logfile "."
+                                            (dat$ (car modstamp))
+                                            (filter '((X) (not (= X ":")))
+                                                    (chop (tim$ (cdr modstamp) T)) ) ) )
+                                  (and
+                                   (call "mv" logfile destfile)
+                                   (call "gzip" "-6" destfile) ) ) )
                                (release lockfile)
                                T ) )
                            files ) )
